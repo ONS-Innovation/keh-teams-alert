@@ -1,96 +1,82 @@
-# KEH Template Repository
+# keh-teams-alert
 
-This repository is a template for all new Knowledge Exchange Hub (KEH) repositories. It contains the basic structure and files that are common to all KEH repositories, such as CODEOWNERS, sample GitHub Actions workflows, and a README template.
+Python module for sending a JSON payload (`channel` and `message`) to an HTTP webhook using an Entra ID (Azure AD) access token acquired via `azure-identity`.
+
+## Requirements
+
+- Python **>= 3.12**
+- Poetry **2.x**
+- Entra ID App Registration (client credentials: tenant id, client id, client secret)
+- A webhook endpoint that accepts JSON like:
+  ```json
+  { "channel": "some-channel", "message": "some-message" }
+  ```
+
+## Install (as a dependency in another app)
+
+### Install from a local path (editable)
+```bash
+pip install -e /Users/Anthony/Documents/WORK/KEH/keh-teams-alert
+```
+
+### Build a wheel and install it
+In this repo:
+```bash
+poetry build
+```
+
+In the consuming project:
+```bash
+pip install /path/to/keh-teams-alert/dist/keh_teams_alert-*.whl
+```
+
+## Development (this repo)
+
+Install dependencies:
+```bash
+poetry install
+```
+
+Quick import check:
+```bash
+poetry run python -c "from keh_teams_alert import EntraTokenWebhookClient; print('ok')"
+```
+
+Build:
+```bash
+poetry build
+```
 
 ## Usage
 
-### Creating a New Repository
+```python
+from keh_teams_alert import EntraTokenWebhookClient
 
-To use this template when creating a new repository, simply select "Use this template" on GitHub and follow the prompts to create your new repository based on this template. This will ensure that your new repository has the necessary structure and files to maintain consistency across all KEH repositories.
+client = EntraTokenWebhookClient(
+    tenant_id="00000000-0000-0000-0000-000000000000",
+    client_id="00000000-0000-0000-0000-000000000000",
+    client_secret="***",
+    scope="https://management.azure.com/.default",
+)
 
-### Further Setup
+payload = {
+    "channel": "alerts",
+    "message": "Hello from KEH",
+}
 
-Since this repository is intended for all KEH repositories, it needs some additional setup once you have created your new repository. The steps below outline the necessary customisation and setup:
-
-1. **Update the README**: Replace the content of the README with information relevant to your project. This should use the template below as a starting point.
-2. **Update CODEOWNERS**: Modify the CODEOWNERS file to chose the appropriate team. The 2 options for KEH are within the file itself.
-3. **Set up GitHub Actions**: This repository has already setup some sample GitHub Actions workflows (i.e. MkDocs related actions and Megalinter). In addition to this, the repository should also have its primary language linter and test workflow set up. Placeholders for these workflows are already in place, so you just need to fill in the details ([ci-fmt](./.github/workflows/ci-fmt.yml), [ci-test](./.github/workflows/ci-test.yml)).
-4. **Setup Repository Settings**: The repository should have the following settings configured:
-   1. **Contributors**:
-      1. Add `keh-dev` to the repository with **Write** access.
-      2. Add `keh-dev-admin` to the repository with **Admin** access.
-   2. **Branch Protection Rules**:
-      1. Within `Rules > Rulesets`, create a new _branch ruleset_ for the `main` branch.
-      2. Add the following rules to the ruleset:
-         1. Add `keh-dev-admin` to the Bypass List. This is for emergency situations where you need to bypass branch protection rules.
-         2. Target the Default Branch (`main`).
-         3. Restrict deletions.
-         4. Require a pull request before merging. This should require **at least 2 approving reviews**.
-         5. Block force pushes.
-      3. Save the ruleset.
-5. **Setup Repository for Project Use**: Now that the housekeeping is done, you can set up the repository for project use.
-
-#### Python Specific Setup
-
-When using Python, Poetry has already been setup for dependency management since it is used for documentation.
-
-Ensure that you update the `pyproject.toml` file to match the needs of your project.
-
-## README Template
-
-The below is a template for the README file that should be used for all KEH repositories. This template provides a basic structure and can be customised to fit the specific needs of your project.
-
-Everything above this line should be removed when customising the README for your project.
-
----
-
-# Project Name <!-- markdownlint-disable-line MD025 -->
-
-<!-- A brief description of the project goes here. -->
-
-## Table of Contents
-
-<!-- A table of contents for the README goes here. -->
-<!-- This can be automatically generated using a tool like the Markdown All in One extension for Visual Studio Code. -->
-
-## Prerequisites
-
-<!-- A list of prerequisites for the project goes here. -->
-
-## Makefile
-
-This project uses a Makefile to simplify common tasks.
-To see the available commands, run:
-
-```bash
-make all
+client.post_to_webhook(
+    webhook_url="https://example/webhook",
+    payload=payload,
+)
 ```
 
-## Running the Project
+## Error handling
 
-<!-- Instructions for running the project go here. This can include commands to start the project, as well as any necessary configuration steps. -->
-
-## Deployment
-
-### Deployments with Concourse
-
-<!-- Instructions for deploying the project using Concourse go here. This can be copied from other KEH repositories. -->
-
-### Manual Deployment
-
-<!-- Instructions for manually deploying the project go here. This can be copied from other KEH repositories. -->
+Token acquisition errors (bad credentials/consent) and network errors are caught and re-raised as `RuntimeError` with context from the underlying Azure SDK exception.
 
 ## Documentation
 
-<!-- Add any additional information if needed -->
-
 This repository uses [MkDocs](https://www.mkdocs.org/) for documentation. The documentation source files are located in the `docs` directory.
-
-### GitHub Actions for Documentation
-
-MkDocs gets deployed to GitHub Pages using GitHub Actions. The workflow for this is located at `.github/workflows/deploy-docs.yml`.
-Before deployment, another GitHub Action workflow runs to check that the documentation builds correctly and has no linting or formatting issues.
-This workflow is located at `.github/workflows/ci-docs.yml`.
 
 ### Local Development of Documentation
 
@@ -122,9 +108,33 @@ This repository has GitHub Actions workflows set up for linting and testing. The
 
 ### Running Tests and Linters Locally
 
-#### Primary Language
+#### Primary Language (Python)
 
-<!-- Instructions for running the primary language linter and tests locally go here. This will depend on the primary language of the project. -->
+Install dependencies:
+
+```bash
+poetry install
+```
+
+Run formatting (if configured):
+
+```bash
+poetry run ruff format .
+```
+
+Run linting (if configured):
+
+```bash
+poetry run ruff check .
+```
+
+Run unit tests (if configured):
+
+```bash
+poetry run pytest -q
+```
+
+> If you don’t have `ruff`/`pytest` configured in this repo yet, add them as dev dependencies and/or update these commands to match your tooling.
 
 #### MegaLinter
 
@@ -136,7 +146,7 @@ To run MegaLinter locally, you can use the following command:
 ```bash
 docker run --platform linux/amd64 --rm \
     -v /var/run/docker.sock:/var/run/docker.sock:rw \
-    -v $(shell pwd):/tmp/lint:rw \
+    -v $(pwd):/tmp/lint:rw \
     oxsecurity/megalinter:v8
 ```
 
@@ -167,5 +177,4 @@ To test that the documentation builds correctly, you can use the following comma
 ```bash
 poetry run mkdocs build
 ```
-
-**Note:** This depends on MkDocs being set up for the repository. Instructions for setting up MkDocs can be found in the [Documentation](#documentation) section of this README.
+```
