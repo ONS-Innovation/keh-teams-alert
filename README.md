@@ -8,6 +8,7 @@ Python module for sending a JSON payload (`channel` and `message`) to an HTTP we
 - Poetry **2.x**
 - Entra ID App Registration (client credentials: tenant id, client id, client secret)
 - A webhook endpoint that accepts JSON like:
+
   ```json
   { "channel": "some-channel", "message": "some-message" }
   ```
@@ -15,17 +16,21 @@ Python module for sending a JSON payload (`channel` and `message`) to an HTTP we
 ## Install (as a dependency in another app)
 
 ### Install from a local path (editable)
+
 ```bash
 pip install -e /Users/Anthony/Documents/WORK/KEH/keh-teams-alert
 ```
 
 ### Build a wheel and install it
+
 In this repo:
+
 ```bash
 poetry build
 ```
 
 In the consuming project:
+
 ```bash
 pip install /path/to/keh-teams-alert/dist/keh_teams_alert-*.whl
 ```
@@ -33,16 +38,19 @@ pip install /path/to/keh-teams-alert/dist/keh_teams_alert-*.whl
 ## Development (this repo)
 
 Install dependencies:
+
 ```bash
 poetry install
 ```
 
 Quick import check:
+
 ```bash
 poetry run python -c "from keh_teams_alert import EntraTokenWebhookClient; print('ok')"
 ```
 
 Build:
+
 ```bash
 poetry build
 ```
@@ -177,4 +185,5 @@ To test that the documentation builds correctly, you can use the following comma
 ```bash
 poetry run mkdocs build
 ```
+
 ```
