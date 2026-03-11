@@ -185,4 +185,3 @@ To test that the documentation builds correctly, you can use the following comma
 ```bash
 poetry run mkdocs build
 ```
-
