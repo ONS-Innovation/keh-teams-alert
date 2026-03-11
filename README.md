@@ -186,4 +186,3 @@ To test that the documentation builds correctly, you can use the following comma
 poetry run mkdocs build
 ```
 
-```
