@@ -9,18 +9,19 @@ license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "azure-core (>=1.38.2,<2.0.0)"
+    "azure-core>=1.38.2,<2.0.0",
+    "azure-identity>=1.25.2,<2.0.0",
+    "requests>=2.31,<3.0",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.12,<4.0"
-azure-identity = "^1.25.2"
+[tool.poetry]
+# IMPORTANT: do not set package-mode = false
+packages = [{ include = "keh_teams_alert.py", from = "src" }]
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
 mkdocs-material = "^9.6.15"
 mkdocstrings-python = "^1.16.12"
-
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
