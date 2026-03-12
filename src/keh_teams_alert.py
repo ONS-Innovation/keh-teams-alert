@@ -41,3 +41,8 @@ class EntraTokenWebhookClient:
         resp = requests.post(webhook_url, json=payload, headers=headers)
         resp.raise_for_status()
         return resp
+
+
+TeamsAlertClient = EntraTokenWebhookClient
+
+__all__ = ["EntraTokenWebhookClient", "TeamsAlertClient"]
