@@ -18,7 +18,7 @@ Python module for sending a JSON payload (`channel` and `message`) to an HTTP we
 ### Install from a local path (editable)
 
 ```bash
-pip install -e /Users/Anthony/Documents/WORK/KEH/keh-teams-alert
+pip install -e /path/to/keh-teams-alert
 ```
 
 ### Build a wheel and install it
