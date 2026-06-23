@@ -2,7 +2,7 @@
 name: Deploy Documentation (MkDocs)
 on:
   push:
-    branches: [main]
+    branches: [main, keh-2329_team_alerts_zizmor]
 permissions:
   contents: write
 jobs:

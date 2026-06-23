@@ -8,6 +8,4 @@ rules:
     level: warning
   truthy:
     allowed-values: ["true", "false", "on", "off"]
-
-  # don't bother me with this rule
   indentation: enable
