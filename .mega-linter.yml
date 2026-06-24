@@ -29,6 +29,10 @@ DISABLE_LINTERS:
 
   # Disable due to poor configuration options
   - ACTION_ACTIONLINT
+
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
+  - GITHUB_TOKEN
+
 SHOW_ELAPSED_TIME: true
 FILEIO_REPORTER: false
 # Uncomment if you want MegaLinter to detect errors but not block CI to pass
