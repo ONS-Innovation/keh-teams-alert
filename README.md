@@ -2,6 +2,37 @@
 
 Python module for sending a JSON payload (`channel` and `message`) to an HTTP webhook using an Entra ID (Azure AD) access token acquired via `azure-identity`.
 
+## Table of Contents
+
+- [keh-teams-alert](#keh-teams-alert)
+  - [Table of Contents](#table-of-contents)
+  - [Makefile](#makefile)
+  - [Requirements](#requirements)
+  - [Install (as a dependency in another app)](#install-as-a-dependency-in-another-app)
+    - [Install from a local path (editable)](#install-from-a-local-path-editable)
+    - [Build a wheel and install it](#build-a-wheel-and-install-it)
+  - [Development (this repo)](#development-this-repo)
+  - [Usage](#usage)
+  - [Error handling](#error-handling)
+  - [Documentation](#documentation)
+    - [GitHub Actions for Documentation](#github-actions-for-documentation)
+    - [Local Development of Documentation](#local-development-of-documentation)
+  - [Linting and Testing](#linting-and-testing)
+    - [GitHub Actions](#github-actions)
+    - [Running Tests and Linters Locally](#running-tests-and-linters-locally)
+      - [Primary Language](#primary-language)
+      - [MegaLinter](#megalinter)
+      - [Documentation linting and building](#documentation-linting-and-building)
+
+## Makefile
+
+This project uses a Makefile to simplify common tasks.
+To see the available commands, run:
+
+```bash
+make help
+```
+
 ## Requirements
 
 - Python **>= 3.12**
@@ -86,20 +117,33 @@ Token acquisition errors (bad credentials/consent) and network errors are caught
 
 This repository uses [MkDocs](https://www.mkdocs.org/) for documentation. The documentation source files are located in the `docs` directory.
 
+### GitHub Actions for Documentation
+
+MkDocs gets deployed to GitHub Pages using GitHub Actions. The workflow for this is located at `.github/workflows/deploy-docs.yml`.
+Before deployment, another GitHub Action workflow runs to check that the documentation builds correctly and has no linting or formatting issues.
+This workflow is located at `.github/workflows/ci-docs.yml`.
+
 ### Local Development of Documentation
 
 To run the documentation locally:
 
-1. Install the dependencies for MkDocs.
+1. Create a Python virtual environment and activate it.
 
    ```bash
-   poetry install --only docs
+   python -m venv venv
+   source venv/bin/activate
    ```
 
-2. Run the MkDocs development server.
+2. Install the dependencies for MkDocs.
 
    ```bash
-   poetry run mkdocs serve
+   make docs-install
+   ```
+
+3. Run the MkDocs development server.
+
+   ```bash
+   make docs-serve
    ```
 
 ## Linting and Testing
@@ -116,33 +160,9 @@ This repository has GitHub Actions workflows set up for linting and testing. The
 
 ### Running Tests and Linters Locally
 
-#### Primary Language (Python)
+#### Primary Language
 
-Install dependencies:
-
-```bash
-poetry install
-```
-
-Run formatting (if configured):
-
-```bash
-poetry run ruff format .
-```
-
-Run linting (if configured):
-
-```bash
-poetry run ruff check .
-```
-
-Run unit tests (if configured):
-
-```bash
-poetry run pytest -q
-```
-
-> If you don’t have `ruff`/`pytest` configured in this repo yet, add them as dev dependencies and/or update these commands to match your tooling.
+<!-- Instructions for running the primary language linter and tests locally go here. This will depend on the primary language of the project. -->
 
 #### MegaLinter
 
@@ -152,36 +172,29 @@ We use this so that all additional assets in the repository (e.g. YAML files, Ma
 To run MegaLinter locally, you can use the following command:
 
 ```bash
-docker run --platform linux/amd64 --rm \
-    -v /var/run/docker.sock:/var/run/docker.sock:rw \
-    -v $(pwd):/tmp/lint:rw \
-    oxsecurity/megalinter:v8
+make megalinter
 ```
 
 #### Documentation linting and building
 
 This repository uses Markdownlint for linting the documentation. To run Markdownlint locally, you can use the following:
 
-1. Install the dependencies for Markdownlint.
+```bash
+make docs-lint
+```
 
-   ```bash
-   npm install -g markdownlint-cli
-   ```
+**Note:** This will install `markdownlint-cli` globally via npm if it is not already installed.
 
-2. Run Markdownlint.
+To apply automatic fixes for any linting issues found by Markdownlint, you can use:
 
-   ```bash
-   markdownlint .
-   ```
-
-   _(Optional) Add the `--fix` flag to automatically fix any linting issues that can be fixed._
-
-   ```bash
-   markdownlint . --fix
-   ```
+```bash
+make docs-fix
+```
 
 To test that the documentation builds correctly, you can use the following command:
 
 ```bash
-poetry run mkdocs build
+make docs-build
 ```
+
+**Note:** This depends on MkDocs being set up for the repository. Instructions for setting up MkDocs can be found in the [Documentation](#documentation) section of this README.
