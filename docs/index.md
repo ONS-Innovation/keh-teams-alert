@@ -74,7 +74,7 @@ The client returns the `requests.Response` from the webhook. This allows callers
 Authentication and token-network failures are normalised to `RuntimeError`:
 
 | Condition                                            | Exception            | Meaning                                                |
-| ---------------------------------------------------- | -------------------- | ------------------------------------------------------ |
+|------------------------------------------------------|----------------------|--------------------------------------------------------|
 | Invalid credentials, scope, or consent               | `RuntimeError`       | Entra ID rejected token acquisition.                   |
 | Network, DNS, or TLS failure while acquiring a token | `RuntimeError`       | The Entra ID endpoint could not be reached.            |
 | Non-success webhook response                         | `requests.HTTPError` | The webhook rejected or could not process the request. |
