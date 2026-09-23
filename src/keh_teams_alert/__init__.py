@@ -5,7 +5,7 @@ from azure.core.exceptions import ClientAuthenticationError, ServiceRequestError
 from azure.identity import ClientSecretCredential
 
 
-class EntraTokenWebhookClient:
+class TeamsAlertClient:
     def __init__(self, tenant_id: str, client_id: str, client_secret: str, scope: str):
         """
         Scope is defined as https://management.azure.com/.default
@@ -48,6 +48,4 @@ class EntraTokenWebhookClient:
         return resp
 
 
-TeamsAlertClient = EntraTokenWebhookClient
-
-__all__ = ["EntraTokenWebhookClient", "TeamsAlertClient"]
+__all__ = ["TeamsAlertClient"]

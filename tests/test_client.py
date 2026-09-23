@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 from azure.core.exceptions import ClientAuthenticationError, ServiceRequestError
 
-from keh_teams_alert import EntraTokenWebhookClient, TeamsAlertClient
+from keh_teams_alert import TeamsAlertClient
 
 TENANT_ID = "tenant-id"
 CLIENT_ID = "client-id"
@@ -13,7 +13,7 @@ SCOPE = "https://management.azure.com/.default"
 
 @patch("keh_teams_alert.ClientSecretCredential")
 def test_initialises_credential_and_stores_scope(credential_class):
-    client = EntraTokenWebhookClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
+    client = TeamsAlertClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
 
     credential_class.assert_called_once_with(
         tenant_id=TENANT_ID,
@@ -27,7 +27,7 @@ def test_initialises_credential_and_stores_scope(credential_class):
 @patch("keh_teams_alert.ClientSecretCredential")
 def test_get_token_returns_token_value(credential_class):
     credential_class.return_value.get_token.return_value = Mock(token="access-token")
-    client = EntraTokenWebhookClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
+    client = TeamsAlertClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
 
     assert client.get_token() == "access-token"
     credential_class.return_value.get_token.assert_called_once_with(SCOPE)
@@ -49,7 +49,7 @@ def test_get_token_returns_token_value(credential_class):
 @patch("keh_teams_alert.ClientSecretCredential")
 def test_get_token_translates_azure_errors(credential_class, azure_error, message):
     credential_class.return_value.get_token.side_effect = azure_error
-    client = EntraTokenWebhookClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
+    client = TeamsAlertClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
 
     with pytest.raises(RuntimeError, match=message) as raised:
         client.get_token()
@@ -58,11 +58,11 @@ def test_get_token_translates_azure_errors(credential_class, azure_error, messag
 
 
 @patch("keh_teams_alert.requests.post")
-@patch.object(EntraTokenWebhookClient, "get_token", return_value="access-token")
+@patch.object(TeamsAlertClient, "get_token", return_value="access-token")
 def test_post_to_webhook_sends_token_payload_and_headers(get_token, post):
     response = post.return_value
     payload = {"message": "Alert"}
-    client = EntraTokenWebhookClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
+    client = TeamsAlertClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
 
     result = client.post_to_webhook(
         "https://example.test/webhook",
@@ -85,9 +85,9 @@ def test_post_to_webhook_sends_token_payload_and_headers(get_token, post):
 
 
 @patch("keh_teams_alert.requests.post")
-@patch.object(EntraTokenWebhookClient, "get_token", return_value="access-token")
+@patch.object(TeamsAlertClient, "get_token", return_value="access-token")
 def test_post_to_webhook_works_without_extra_headers(get_token, post):
-    client = EntraTokenWebhookClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
+    client = TeamsAlertClient(TENANT_ID, CLIENT_ID, CLIENT_SECRET, SCOPE)
 
     client.post_to_webhook("https://example.test/webhook", {"message": "Alert"})
 
@@ -100,7 +100,3 @@ def test_post_to_webhook_works_without_extra_headers(get_token, post):
         },
     )
     get_token.assert_called_once_with()
-
-
-def test_teams_alert_client_is_alias():
-    assert TeamsAlertClient is EntraTokenWebhookClient
