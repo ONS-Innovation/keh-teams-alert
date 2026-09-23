@@ -51,6 +51,8 @@ This is required for the package to acquire an access token for the HTTP webhook
 
 The tool digesting this repository is responsible for securely managing the Azure Entra ID (Azure AD) credentials and passing them to this library during use.
 
+TODO: Specify ONS specific process for getting this.
+
 ### End User Instructions
 
 #### Installation
