@@ -73,19 +73,19 @@ The client returns the `requests.Response` from the webhook. This allows callers
 
 Authentication and token-network failures are normalised to `RuntimeError`:
 
-| Condition | Exception | Meaning |
-| --- | --- | --- |
-| Invalid credentials, scope, or consent | `RuntimeError` | Entra ID rejected token acquisition. |
-| Network, DNS, or TLS failure while acquiring a token | `RuntimeError` | The Entra ID endpoint could not be reached. |
-| Non-success webhook response | `requests.HTTPError` | The webhook rejected or could not process the request. |
+| Condition                                            | Exception            | Meaning                                                |
+| ---------------------------------------------------- | -------------------- | ------------------------------------------------------ |
+| Invalid credentials, scope, or consent               | `RuntimeError`       | Entra ID rejected token acquisition.                   |
+| Network, DNS, or TLS failure while acquiring a token | `RuntimeError`       | The Entra ID endpoint could not be reached.            |
+| Non-success webhook response                         | `requests.HTTPError` | The webhook rejected or could not process the request. |
 
 The original Azure exception is retained as the cause of the `RuntimeError`, so applications can log or inspect it when troubleshooting. The client does not retry requests; retry policy should be owned by the calling application because it depends on whether sending the alert is idempotent.
 
 ## API reference
 
 ::: keh_teams_alert.TeamsAlertClient
- options:
-   show_source: false
+options:
+show_source: false
 
 `TeamsAlertClient` is the public client used to acquire an Entra ID token and post an authenticated JSON payload to a webhook.
 
