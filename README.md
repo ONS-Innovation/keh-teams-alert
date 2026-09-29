@@ -51,7 +51,15 @@ This is required for the package to acquire an access token for the HTTP webhook
 
 The tool digesting this repository is responsible for securely managing the Azure Entra ID (Azure AD) credentials and passing them to this library during use.
 
-TODO: Specify ONS specific process for getting this.
+To request access to an Azure Entra ID App Registration, raise a ServiceNow Request using:
+
+```text
+ServiceNow > Tell us something is broken > Microsoft Teams
+
+Ask for an Azure Entra ID App Registration in the "Please describe your issue below" section.
+```
+
+A member of the M365 team will then be able to assist you with obtaining the necessary Azure Entra ID App Registration and credentials for your application.
 
 ### End User Instructions
 
